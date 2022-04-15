@@ -100,6 +100,7 @@ export default ({ palette, value, onChange }) => {
   const update = ([c, b]) => {
     if (b === 2) {
       c++;
+      b = 0;
 
       if (c === 6) {
         c = 0;
