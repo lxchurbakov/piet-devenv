@@ -37,7 +37,9 @@ const HELLO_WORLD = {
 };
 
 export default () => {
+  const [program, setProgram] = React.useState(HELLO_WORLD);
+
   return (
-    <PietEditor palette={CLASSIC_PALETTE} value={HELLO_WORLD} />
+    <PietEditor palette={CLASSIC_PALETTE} value={program} onChange={setProgram} />
   );
 };

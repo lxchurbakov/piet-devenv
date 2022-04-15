@@ -97,6 +97,40 @@ export default ({ palette, value, onChange }) => {
     }
   }, [value, path]);
 
+  const update = ([c, b]) => {
+    if (b === 2) {
+      c++;
+
+      if (c === 6) {
+        c = 0;
+      }
+    } else {
+      b++;
+    }
+
+    return [c, b];
+  };
+
+  const handleClick = (e) => {
+    const codelSize = { x: 73.84615384615384, y: 73.84615384615384 };
+    const { clientX, clientY } = e;
+    const x = Math.floor((clientX - 146) / codelSize.x);
+    const y = Math.floor((clientY - 200) / codelSize.y);
+
+    onChange({
+      ...value,
+      elements: value.elements.map((row, $y) => {
+        return row.map((item, $x) => {
+          if ($y === y && $x === x) {
+            return update(item);
+          } else {
+            return item;
+          }
+        });
+      }),
+    });
+  };
+
   return (
     <Container>
       <Legend>
@@ -105,7 +139,7 @@ export default ({ palette, value, onChange }) => {
       </Legend>
 
       <Content>
-        <canvas ref={canvasRef} />
+        <canvas ref={canvasRef} onClick={handleClick} />
       </Content>
 
       <Listing>
