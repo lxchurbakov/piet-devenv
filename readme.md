@@ -1,4 +1,4 @@
-# PIET Development Environment
+# Piet Editor
 
 <img width="806" alt="image" src="https://user-images.githubusercontent.com/24711892/163667584-27d4de38-167e-49a8-bc5a-e92380e9a1e4.png">
 
