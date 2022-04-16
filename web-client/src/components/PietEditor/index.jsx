@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Palette from '../Palette';
-
 import { execute } from './helpers';
 
 // Program in Piet consists of 6 colors that have 3 degree of brightness + 2 colors (black and white)
@@ -13,36 +11,9 @@ import { execute } from './helpers';
 
 const Container = styled.div`
   width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 20px 0;
 `;
 
-const Legend = styled.div`
-  margin-bottom: 20px;
-`;
-
-const Title = styled.div`
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 8px;
-`;
-
-const Content = styled.div`
-  width: 960px;
-  height: 960px;
-  margin-bottom: 30px;
-`;
-
-const Listing = styled.div`
-
-`;
-
-const ListingItem = styled.div`
-  font-size: 14px;
-`;
-
-export default ({ palette, value, onChange }) => {
+export default ({ palette, value, onChange, onUpdateAssembler, ...props }) => {
   const [path, setPath] = React.useState([]);
   const [listing, setListing] = React.useState([]);
 
@@ -50,7 +21,8 @@ export default ({ palette, value, onChange }) => {
     const data = execute(value);
 
     setPath(data.path);
-    console.log(data.output.join(''))
+    onUpdateAssembler(data.assembler);
+    // data.output
   }, [value]);
 
   const canvasRef = React.useRef();
@@ -58,13 +30,16 @@ export default ({ palette, value, onChange }) => {
   React.useEffect(() => {
     const canvas = canvasRef.current;
     const parent = canvas.parentNode;
-    const { width, height } = parent.getBoundingClientRect();
+    const { width } = parent.getBoundingClientRect();
+    const height = (width / value.dimensions.x) * value.dimensions.y;
 
     canvas.width = width;
     canvas.height = height;
 
     const context = canvas.getContext('2d');
     const codelSize = { x: width / value.dimensions.x, y: height / value.dimensions.y };
+
+    // console.log(codelSize)
 
     for (let y = 0; y < value.dimensions.y; ++y) {
       for (let x = 0; x < value.dimensions.x; ++x) {
@@ -112,42 +87,29 @@ export default ({ palette, value, onChange }) => {
     return [c, b];
   };
 
-  const handleClick = (e) => {
-    const codelSize = { x: 73.84615384615384, y: 73.84615384615384 };
-    const { clientX, clientY } = e;
-    const x = Math.floor((clientX - 146) / codelSize.x);
-    const y = Math.floor((clientY - 200) / codelSize.y);
-
-    onChange({
-      ...value,
-      elements: value.elements.map((row, $y) => {
-        return row.map((item, $x) => {
-          if ($y === y && $x === x) {
-            return update(item);
-          } else {
-            return item;
-          }
-        });
-      }),
-    });
-  };
+  // const handleClick = (e) => {
+  //   const codelSize = { x: 38.461, y: 38.461 };
+  //   const { clientX, clientY } = e;
+  //   const x = Math.floor((clientX) / codelSize.x);
+  //   const y = Math.floor((clientY - 60) / codelSize.y);
+  //
+  //   onChange({
+  //     ...value,
+  //     elements: value.elements.map((row, $y) => {
+  //       return row.map((item, $x) => {
+  //         if ($y === y && $x === x) {
+  //           return update(item);
+  //         } else {
+  //           return item;
+  //         }
+  //       });
+  //     }),
+  //   });
+  // };
 
   return (
-    <Container>
-      <Legend>
-        <Title>Piet Program Editor</Title>
-        <Palette palette={palette} />
-      </Legend>
-
-      <Content>
-        <canvas ref={canvasRef} onClick={handleClick} />
-      </Content>
-
-      <Listing>
-        {listing.map((listingItem) => (
-          <ListingItem>{listingItem}</ListingItem>
-        ))}
-      </Listing>
+    <Container {...props}>
+      <canvas ref={canvasRef} />
     </Container>
   );
 };

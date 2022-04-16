@@ -64,7 +64,7 @@ export const execute = (program) => {
   // Store the output and the path
   let output = [];
   let path = [pointer];
-  let commands = [];
+  let assembler = [];
 
   // Find the current item and start processing the differences
   let previousItem = getItemOnPointer(pointer, program);
@@ -86,8 +86,6 @@ export const execute = (program) => {
     if (!action) {
       break;
     }
-
-    commands.push(action);
 
     // TODO add checks for errors
     ;({
@@ -113,9 +111,15 @@ export const execute = (program) => {
       onn: () => output.push(stack.pop()),
     })[action]();
 
+    const meta = {
+      och: `Output char "${output[output.length - 1]}"`,
+      onn: `Output number ${output[output.length - 1]}`,
+    }[action] || null;
+
+    assembler.push({ command: action, stack: stack.slice(), meta });
     pointer = applyControls(pointer, controls);
     previousItem = itemOnPointer;
   }
 
-  return { commands, path, output };
+  return { assembler, path, output };
 };

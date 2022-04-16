@@ -1,6 +1,35 @@
 import React from 'react';
+import styled from 'styled-components';
 
+import Header from './components/Header';
+import ProgramMeta from './components/ProgramMeta';
 import PietEditor from './components/PietEditor';
+import ColorPicker from './components/ColorPicker';
+import Assembler from './components/Assembler';
+import Palette from './components/Palette';
+
+const Container = styled.div`
+  width: 100%;
+`;
+
+const Content = styled.div`
+  display: flex;
+  padding: 0 25px;
+  gap: 48px;
+`;
+
+const LeftPanel = styled.div`
+  width: 400px;
+  flex-shrink: 0;
+`;
+
+const RightPanel = styled.div`
+  width: 100%;
+`;
+
+const Console = styled.div`
+  width: 100%;
+`;
 
 const CLASSIC_PALETTE = {
   colors: [
@@ -38,8 +67,31 @@ const HELLO_WORLD = {
 
 export default () => {
   const [program, setProgram] = React.useState(HELLO_WORLD);
+  const [assembler, setAssembler] = React.useState([]);
 
   return (
-    <PietEditor palette={CLASSIC_PALETTE} value={program} onChange={setProgram} />
+    <Container>
+      <Header />
+
+      <Content>
+        <LeftPanel>
+          <ProgramMeta style={{ marginBottom: 26 }} />
+          <PietEditor style={{ marginBottom: 12 }} palette={CLASSIC_PALETTE} value={program} onChange={setProgram} onUpdateAssembler={setAssembler} />
+
+        </LeftPanel>
+
+        <RightPanel>
+          <Assembler assembler={assembler} />
+        </RightPanel>
+      </Content>
+
+      <Console>
+        Some Output
+      </Console>
+
+    </Container>
   );
 };
+
+// <ColorPicker />
+// <Palette palette={CLASSIC_PALETTE} />
