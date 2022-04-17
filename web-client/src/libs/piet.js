@@ -22,7 +22,7 @@ const getItemOnPointer = (pointer, program) => {
   return program.elements[pointer.y][pointer.x];
 };
 
-const getItemsDifference = (current, previous) => {
+export const getItemsDifference = (current, previous) => {
   return {
     color: (6 + current[0] - previous[0]) % 6,
     brightness: (3 + current[1] - previous[1]) % 3,
@@ -76,13 +76,14 @@ export const execute = (program) => {
 
     // We finish the flow once we see black item,
     // but this is not correct, TODO
-    if (itemOnPointer === 'black') {
+    if (itemOnPointer[0] === 6) {
       break;
     }
 
     const difference = getItemsDifference(itemOnPointer, previousItem);
     const action = getActionByDifference(difference);
 
+    // TODO this is not correct as well lol
     if (!action) {
       break;
     }

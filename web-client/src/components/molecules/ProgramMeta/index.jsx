@@ -1,6 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Tags from '../../atoms/Tags';
+
+const VIEW_OPTIONS = [
+  { label: 'Colors', value: 'colors' },
+  { label: 'Values', value: 'values' },
+  { label: 'Gradient', value: 'gradient' },
+];
+
 const Wrap = styled.div`
   width: 100%;
 `;
@@ -33,7 +41,7 @@ const MetaValue = styled.div`
   color: #333;
 `;
 
-export default ({ ...props }) => {
+export default ({ view, onChangeView, ...props }) => {
   return (
     <Wrap {...props}>
       <Title>Your Program</Title>
@@ -47,6 +55,8 @@ export default ({ ...props }) => {
           <MetaLabel>Palette</MetaLabel>
           <MetaValue>Classic</MetaValue>
         </MetaRow>
+
+        <Tags options={VIEW_OPTIONS} value={view} onChange={onChangeView} />
       </MetaContainer>
     </Wrap>
   );

@@ -6,12 +6,6 @@ const Container = styled.div`
   height: 120px;
 `;
 
-// type Palette = {
-//   colors: Color[6][3],
-//   white: Color,
-//   black: Color
-// }
-
 export default ({ palette, ...props }) => {
   const canvasRef = React.useRef();
 
@@ -29,7 +23,7 @@ export default ({ palette, ...props }) => {
     // Render colors
     for (let i = 0; i < 6; ++i) {
       for (let j = 0; j < 3; ++j) {
-        context.fillStyle = palette.colors[i][j];
+        context.fillStyle = palette[i][j];
 
         context.beginPath();
         context.rect(i * colorSize.width, j * colorSize.height, colorSize.width, colorSize.height);
@@ -38,11 +32,11 @@ export default ({ palette, ...props }) => {
     }
 
     // Render black and white
-    context.fillStyle = palette.white;
+    context.fillStyle = palette[6][0];
     context.beginPath();
     context.rect(0, height - colorSize.height, width / 2, colorSize.height);
     context.fill();
-    context.fillStyle = palette.black;
+    context.fillStyle = palette[6][2];
     context.beginPath();
     context.rect(width / 2, height - colorSize.height, width / 2, colorSize.height);
     context.fill();

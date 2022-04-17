@@ -95,15 +95,15 @@ export default ({ assembler, ...props }) => {
 
       <Listing>
         {assembler.map(({ command, stack, meta }, index) => (
-          <Command>
+          <Command key={index}>
             <CommandIndex>{index + 1}:</CommandIndex>
             <CommandValue color={color(command)}>{command}</CommandValue>
             <CommandStack>
               {stack.length > 3 && (
                 <CommandStackEmpty>{'<'}{stack.length - 3}{'>'}</CommandStackEmpty>
               )}
-              {stack.slice(-3).map((value) => (
-                <CommandStackItem>{value}</CommandStackItem>
+              {stack.slice(-3).map((value, index) => (
+                <CommandStackItem key={index}>{value}</CommandStackItem>
               ))}
               {stack.length === 0 && (
                 <CommandStackEmpty>(empty)</CommandStackEmpty>
