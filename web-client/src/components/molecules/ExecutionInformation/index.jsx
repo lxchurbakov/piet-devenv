@@ -99,10 +99,10 @@ export default ({ assembler, ...props }) => {
             <CommandIndex>{index + 1}:</CommandIndex>
             <CommandValue color={color(command)}>{command}</CommandValue>
             <CommandStack>
-              {stack.length > 3 && (
+              {/*stack.length > 3 && (
                 <CommandStackEmpty>{'<'}{stack.length - 3}{'>'}</CommandStackEmpty>
-              )}
-              {stack.slice(-3).map((value, index) => (
+              )*/}
+              {stack.slice(0).map((value, index) => (
                 <CommandStackItem key={index}>{value}</CommandStackItem>
               ))}
               {stack.length === 0 && (

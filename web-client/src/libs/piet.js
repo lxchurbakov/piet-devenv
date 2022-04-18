@@ -29,15 +29,17 @@ export const getItemsDifference = (current, previous) => {
   };
 };
 
+export const ACTIONS = [
+  [ null, 'pus', 'pop'],
+  ['add', 'sub', 'mul'],
+  ['div', 'mod', 'not'],
+  ['gre', 'poi', 'swi'],
+  ['dup', 'rol', 'inn'],
+  ['ich', 'onn', 'och'],
+];
+
 const getActionByDifference = ({ color, brightness }) => {
-  return [
-    [ null, 'pus', 'pop'],
-    ['add', 'sub', 'mul'],
-    ['div', 'mod', 'not'],
-    ['gre', 'poi', 'swi'],
-    ['dup', 'rol', 'inn'],
-    ['ich', 'onn', 'och'],
-  ][color][brightness];
+  return ACTIONS[color][brightness];
 };
 
 const rollStack = (stack) => {
@@ -65,20 +67,28 @@ export const execute = (program) => {
   let output = [];
   let path = [pointer];
   let assembler = [];
+  let errors = [];
+  let index = 1;
 
   // Find the current item and start processing the differences
   let previousItem = getItemOnPointer(pointer, program);
   pointer = applyControls(pointer, controls);
 
   while (true) {
-    path.push(pointer);
+    if (pointer.x < 0 || pointer.y < 0 || pointer.x >= program.dimensions.x || pointer.y >= program.dimensions.y) {
+      errors.push({ type: 'pointer', index, pointer, message: 'Invalid pointer!' });
+      break;
+    }
+
     let itemOnPointer = getItemOnPointer(pointer, program);
 
-    // We finish the flow once we see black item,
+    // We finish the flow once we see black/white item,
     // but this is not correct, TODO
     if (itemOnPointer[0] === 6) {
       break;
     }
+
+    path.push(pointer);
 
     const difference = getItemsDifference(itemOnPointer, previousItem);
     const action = getActionByDifference(difference);
@@ -88,29 +98,35 @@ export const execute = (program) => {
       break;
     }
 
-    // TODO add checks for errors
-    ;({
-      pus: () => stack.push(1),
-      pop: () => stack.pop(),
-      dup: () => ((v) => {stack.push(v); stack.push(v)})(stack.pop()),
-      rol: () => rollStack(stack),
+    const actionConfig = {
+      pus: [0, () => stack.push(1)],
+      pop: [1, () => stack.pop()],
+      dup: [1, () => ((v) => {stack.push(v); stack.push(v)})(stack.pop())],
+      rol: [2, () => rollStack(stack)],
 
-      add: () => stack.push(stack.pop() + stack.pop()),
-      sub: () => stack.push(stack.pop() - stack.pop()),
-      mul: () => stack.push(stack.pop() * stack.pop()),
-      div: () => stack.push(stack.pop() / stack.pop()),
-      mod: () => stack.push(stack.pop() % stack.pop()),
-      not: () => stack.push(!!stack.pop() ? 0 : 1),
-      gre: () => stack.push(stack.pop()  > stack.pop() ? 1 : 0),
+      add: [2, () => stack.push(stack.pop() + stack.pop())],
+      sub: [2, () => stack.push(stack.pop() - stack.pop())],
+      mul: [2, () => stack.push(stack.pop() * stack.pop())],
+      div: [2, () => stack.push(stack.pop() / stack.pop())],
+      mod: [2, () => stack.push(stack.pop() % stack.pop())],
+      not: [1, () => stack.push(!!stack.pop() ? 0 : 1)],
+      gre: [2, () => stack.push(stack.pop()  > stack.pop() ? 1 : 0)],
 
-      poi: () => { controls = rotateControls(controls, stack.pop()); },
-      swi: () => { controls = swapControls(controls, stack.pop()); },
+      poi: [1, () => { controls = rotateControls(controls, stack.pop()); }],
+      swi: [1, () => { controls = swapControls(controls, stack.pop()); }],
 
-      ich: () => {},
-      inn: () => {},
-      och: () => output.push(String.fromCharCode(stack.pop())),
-      onn: () => output.push(stack.pop()),
-    })[action]();
+      ich: [0, () => {}],
+      inn: [0, () => {}],
+      och: [1, () => output.push(String.fromCharCode(stack.pop()))],
+      onn: [1, () => output.push(stack.pop())],
+    }[action];
+
+    if (stack.length < actionConfig[0]) {
+      errors.push({ type: 'action', index, action, message: 'Not enough items on stack!' });
+      break;
+    }
+
+    actionConfig[1]();
 
     const meta = {
       och: `Output char "${output[output.length - 1]}"`,
@@ -120,7 +136,12 @@ export const execute = (program) => {
     assembler.push({ command: action, stack: stack.slice(), meta });
     pointer = applyControls(pointer, controls);
     previousItem = itemOnPointer;
+    index++;
+
+    if (index > 200) {
+      break;
+    }
   }
 
-  return { assembler, path, output };
+  return { assembler, path, output, errors };
 };

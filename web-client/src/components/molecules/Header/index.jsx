@@ -18,7 +18,7 @@ const Title = styled.div`
 
 const PIET_VERSIONS_OPTIONS = [
   { label: 'Piet@1.0', value: '1.0' },
-  { label: 'Piet@2.0', value: '2.0' },
+  { label: 'Piet@1.1', value: '1.1' },
 ];
 
 export default () => {

@@ -54,12 +54,12 @@ const RightSide = styled.div`
   gap: 2px;
 `;
 
-export default ({ value, onChange, palette }) => {
+export default ({ value, onChange, palette, ...props }) => {
   const [color, brightness] = value;
   const colorCode = [String.fromCharCode(color + '1'.charCodeAt(0)), String.fromCharCode(brightness + 'a'.charCodeAt(0))].join('');
 
   return (
-    <Wrap>
+    <Wrap {...props}>
       <LeftSide>
         <Title>Color</Title>
 

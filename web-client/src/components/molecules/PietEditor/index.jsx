@@ -54,7 +54,8 @@ export default ({ path, view, palette, value, onClick, ...props }) => {
 
         if (view === 'values') {
           const code = value.elements[y][x];
-          const text = getColorCode(code);
+          // const text = getColorCode(code);
+          const text = code[0] * 3 + code[1];
 
           context.fillText(text, x * codelSize.x + codelSize.x / 2, y * codelSize.y + codelSize.y / 2 + 5);
         }
