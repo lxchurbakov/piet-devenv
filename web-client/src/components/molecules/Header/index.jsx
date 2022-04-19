@@ -7,6 +7,7 @@ const MAIN_COLOR = '#053858';
 
 const Wrap = styled.div`
   padding: 25px;
+  border-bottom: 1px solid #ccc;
 `;
 
 const Title = styled.div`
@@ -28,7 +29,7 @@ export default () => {
         Piet Editor
       </Title>
 
-      <Tags options={PIET_VERSIONS_OPTIONS} value={'1.0'} onChange={() => {}} />
+      {/* <Tags options={PIET_VERSIONS_OPTIONS} value={'1.0'} onChange={() => {}} /> */}
     </Wrap>
   );
 };
