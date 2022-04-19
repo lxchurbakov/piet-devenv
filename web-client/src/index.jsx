@@ -19,7 +19,6 @@ const Container = styled.div`
 
 const Content = styled.div`
   display: flex;
-  padding: 25px;
   gap: 48px;
 `;
 

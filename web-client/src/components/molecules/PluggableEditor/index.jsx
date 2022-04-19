@@ -5,6 +5,7 @@ import boot from './boot';
 
 const Wrap = styled.div`
   width: 100%;
+  border: 1px solid #ccc;
 `;
 
 export default () => {

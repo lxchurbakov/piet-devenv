@@ -44,6 +44,7 @@ export default class Events {
     const y = clientY - this.top;
 
     this.lastpos = { x, y };
+    this.onMouseDown.emitSync({ x, y });
   };
 
   handleMouseMove = ({ clientX, clientY }) => {
@@ -60,6 +61,7 @@ export default class Events {
 
   handleMouseUp = () => {
     this.lastpos = null
+    this.onMouseUp.emitSync();
   };
 
   handleMouseWheel = (e) => {
